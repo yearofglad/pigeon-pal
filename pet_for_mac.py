@@ -21,7 +21,6 @@ check = 1
 
 idle_num = [1, 2, 3]
 #if event number == 4, idle to sleep
-
 walk_left = [5, 6, 7, 8]
 walk_right = [9, 10, 11, 12]
 sleep_num = [13, 14]
@@ -215,8 +214,6 @@ def update(cycle, check, event_number, x, y):
     elif check == 8:
         frame = feeding[cycle]
         cycle, event_number = gif_work(cycle, feeding, event_number, 3,12)#feeding
-        
-        
 
     # Ensure the window stays within the screen boundaries
     x = max(0, min(x, screen_width - 100))
@@ -234,12 +231,6 @@ walk_positive = [tk.PhotoImage(file=impath + 'walkingleft.gif', format='gif -ind
 walk_negative = [tk.PhotoImage(file=impath + 'walkingright.gif', format='gif -index %i' % i) for i in range(8)]
 poop = [tk.PhotoImage(file=impath + 'pooping.gif', format='gif -index %i' % i) for i in range(8)]
 
-
-#helicopter_1 = [tk.PhotoImage(file=impath + 'helicopter_1.gif', format='gif -index %i' % i) for i in range(18)]
-# helicopter_fast = [tk.PhotoImage(file=impath + 'helicopter_fast.gif', format='gif -index %i' % i) for i in range(9)]
-# helicopter_fastest = [tk.PhotoImage(file=impath + 'helicopter_fastest.gif', format='gif -index %i' % i) for i in range(9)]
-#tornado = [tk.PhotoImage(file=impath + 'TORNADO.gif', format='gif -index %i' % i) for i in range(3)]
-
 helicopter_1 = unpack_gif(src=impath + 'helicopter_1.gif')
 helicopter_fast = unpack_gif(src=impath + 'helicopter_fast.gif')
 helicopter_fastest = unpack_gif(src=impath + 'helicopter_fastest.gif')
@@ -249,60 +240,25 @@ feeding = [tk.PhotoImage(file=impath + 'feeding.gif', format='gif -index %i' % i
 helicopter = [] + helicopter_1 + helicopter_fast + helicopter_fastest + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado
 helicopter = helicopter + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado +  tornado 
 print(len(helicopter))
-# Window configuration
 
+# Window configuration
 window.config(highlightbackground='#5a4e44')
 # Set background color and remove border
 window.configure(background='#5a4e44', highlightthickness=0)
 label = tk.Label(window, bd=0, bg='#5a4e44')
 window.overrideredirect(True)
-#window.wm_attributes('-transparentcolor', '#5a4e44')
-#window.wm_attributes('-transparent', '#5a4e44')
 
 #draws on top
 window.attributes('-topmost', True)
 label.bind("<Button-1>", label_click)
 label.pack()
 
-
-# #progress bar stuff:
-# # Progress Bar window configuration
-# progress_window = tk.Toplevel(window)
-# progress_window.title("Progress Bar")
-# progress_window.attributes('-topmost', True)
-# progress_window.geometry('96x96+' + str(0) + '+'+ str(y))
-
-# # Dark purple outline
-# progress_window.configure(bg='#3B1D57')
-
-# # Create a style for the progress bar
-# style = ttk.Style()
-# style.configure("Purple.Horizontal.TProgressbar",
-#                 thickness=30,  # Adjust thickness
-#                 troughcolor='#3B1D57',  # Dark purple outline
-#                 bordercolor='#3B1D57',  # Dark purple outline
-#                 lightcolor='#8C7C9A',  # Light purple fill
-#                 darkcolor='#8C7C9A',  # Light purple fill
-#                 troughrelief='flat',  # Flat relief
-#                 troughpadding=0)  # No padding
-
-# progress_var = tk.DoubleVar()
-# progress_bar = ttk.Progressbar(progress_window, variable=progress_var, length=100, mode='determinate', style="Purple.Horizontal.TProgressbar")
-# progress_bar.pack(pady=20)
-
-
-#### progress bar stuff
-
 # Create a new Toplevel window for the progress bar
 progress_window = tk.Toplevel(window)
 progress_window.title("Progress Bar Window")
-#progress_window.geometry('30x' + str(96) + '+0+0')  # Adjust the size and position of the window
 
 progress_window.attributes('-topmost', True)
 progress_window.geometry('30x120+' + str(0) + '+'+ str(y))
-#progress_window.attributes('-alpha', 0.7) 
-#progress_window.attributes("-transparentcolor", "black")  # Replace "black" with the color you want to be transparent
-#progress_window.overrideredirect(True)  # Remove window borders
 
 # Create an image for the feed button
 feed_image = Image.open('feed_image.png')  # Replace 'feed_image.png' with the actual image file
@@ -316,7 +272,6 @@ feed_button.pack(side=tk.TOP, pady=0)
 feed_button.image = feed_photo
 
 # Create a label for the progress bar
-#progress_label = ttk.Label(progress_window, text="Progress Bar", font=("Arial", 12))
 progress_label = ttk.Label(progress_window)
 progress_label.pack(side=tk.LEFT, pady=0)
 
@@ -324,11 +279,8 @@ progress_label.pack(side=tk.LEFT, pady=0)
 style = ttk.Style()
 style.theme_use('default')
 style.configure("TProgressbar", thickness=10, troughcolor="#6a5acd", bordercolor="#800080", background="#9370db")
-#transparent?
-#style.configure("TProgressbar", thickness=10, troughcolor="#6a5acd", bordercolor="#800080", background="#0000000")
 
 # Create a progress bar
-#progress_bar = ttk.Progressbar(progress_window, variable=progress_value, length=20, mode='determinate', orient='vertical', style="TProgressbar")
 style = ttk.Style()
 style.layout("TVertical.TProgressbar",
              [('Vertical.Progressbar.trough',
@@ -341,10 +293,6 @@ progress_bar.pack(side=tk.TOP, pady=0)
 
 # Start the decrementing process
 window.after(1, decrement_progress)
-
-####Progress bar stuff end
-
-
 
 # Loop the program
 window.after(1, update, cycle, check, event_number, x, y)
