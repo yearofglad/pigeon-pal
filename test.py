@@ -26,34 +26,30 @@ event_number = random.randrange(1, 3, 1)
 
 impath = './pgifs/'
 
-
-# def label_click(event):
-#     print("label clicked")
-#     check = 6
-#     event_number = 100
-#     cycle = 0
-    
-#     cycle, event_number = gif_work(cycle, poop, event_number, 1, 12)
-#     window.geometry('96x96+' + str(x) + '+'+ str(y))
-#     frame = poop[cycle]
-#     label.configure(image=frame)
- 
-#     window.after(1, update, cycle, check, event_number, x, y)
-#     return
 button_pressed = False
+pooped_times = 0
 
 def label_click(event):
     global button_pressed
+    global pooped_times
     print("label clicked")
     button_pressed = True
+    pooped_times += 1
 
 def event(cycle, check, event_number, x, y):
     global button_pressed
-    if button_pressed:
+    global pooped_times
+    if button_pressed and pooped_times < 5:
         check = 6
         event_number = 100
         window.after(100, update, cycle, check, event_number, x, y)
         button_pressed = False
+    elif button_pressed and pooped_times == 5:
+        check = 7
+        event_number = 200
+        window.after(100, update, cycle, check, event_number, x, y)
+        button_pressed = False
+        pooped_times = 0
     elif event_number in idle_num:
         check = 0
         print('idle')
@@ -81,6 +77,10 @@ def event(cycle, check, event_number, x, y):
     elif event_number == 100:
         check = 6
         print('button press poop')
+        window.after(100, update, cycle, check, event_number, x, y)
+    elif event_number == 200:
+        check = 7
+        print('HELICOPTER')
         window.after(100, update, cycle, check, event_number, x, y)
         
 
@@ -116,6 +116,16 @@ def update(cycle, check, event_number, x, y):
     elif check == 6:
         frame = poop[cycle]
         cycle, event_number = gif_work(cycle, poop, event_number, 1,12)#go to idle or walk more
+    elif check == 7:
+        frame = helicopter[cycle]
+        if 30 < cycle < 50:
+            x += 15
+            y -= 12
+        elif cycle >= 50:
+            x -= 15
+            y += 10
+        cycle, event_number = gif_work(cycle, helicopter, event_number, 1,12)#go to idle or walk more
+        
 
     # Ensure the window stays within the screen boundaries
     x = max(0, min(x, screen_width - 100))
@@ -134,6 +144,16 @@ walk_positive = [tk.PhotoImage(file=impath + 'walkleft.gif', format='gif -index 
 walk_negative = [tk.PhotoImage(file=impath + 'walkright.gif', format='gif -index %i' % i) for i in range(8)]
 poop = [tk.PhotoImage(file=impath + 'poop.gif', format='gif -index %i' % i) for i in range(8)]
 
+helicopter_1 = [tk.PhotoImage(file=impath + 'helicopter_1.gif', format='gif -index %i' % i) for i in range(18)]
+helicopter_slow = [tk.PhotoImage(file=impath + 'helicopter_slow.gif', format='gif -index %i' % i) for i in range(9)]
+helicopter_fast = [tk.PhotoImage(file=impath + 'helicopter_fast.gif', format='gif -index %i' % i) for i in range(9)]
+helicopter_faster = [tk.PhotoImage(file=impath + 'helicopter_faster.gif', format='gif -index %i' % i) for i in range(9)]
+helicopter_fastest = [tk.PhotoImage(file=impath + 'helicopter_fastest.gif', format='gif -index %i' % i) for i in range(9)]
+tornado = [tk.PhotoImage(file=impath + 'TORNADO.gif', format='gif -index %i' % i) for i in range(3)]
+
+helicopter = [] + helicopter_1 + helicopter_slow + helicopter_fast + helicopter_fastest + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado 
+helicopter = helicopter + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado
+print(len(helicopter))
 # Window configuration
 
 # window.config(highlightbackground='black')
