@@ -1,10 +1,11 @@
-# Pigeon Pal
+# Pigeon Pal: A desktop pet that frolics around on your desktop. 
 *Fab is here to help you become your best self.*
 
 **For ADI DevFest2024!!**
 
-## Pigeon Pal: A desktop pet that frolics around on your desktop. You can feed it, interact with it, there are many hidden Easter eggs to encourage users to explore.
-
+## Pigeon Pal
+### You can feed it, interact with it, and there are many hidden Easter eggs to encourage users to explore.
+#### Created by: Eris Gao, Ben Fu, Madeline Ou, and Vinson Zhang
 
 We were inspired by virtual desktop pets and wanted to build our own cute pigeon pal desktop friend straight from Morningside Heights.
 
