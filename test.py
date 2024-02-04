@@ -1,56 +1,109 @@
 import tkinter as tk
 import random
-import time
-import os
-from PIL import Image, ImageTk
 
 window = tk.Tk()
 
-window.config(highlightbackground='black')
-window.overrideredirect(True)
-window.wm_attributes('-transparentcolor','black')
+# Set screen width and height
+screen_width = window.winfo_screenwidth()
+screen_height = window.winfo_screenheight()
 
-x = 0
-window.geometry(f'100x100+{x}+200')  # Set window dimensions and initial position
+#begin x
+x = 100
+#begin y
+y = 700
 
-idle = [tk.PhotoImage(file = './gifs/idle.gif', format = 'gif -index %i' %(i)) for i in range(5)]
-idle_to_sleep = [tk.PhotoImage(file = './gifs/idle_to_sleep.gif', format = 'gif -index %i' %(i)) for i in range(8)]
-sleep_to_idle = [tk.PhotoImage(file = './gifs/sleep_to_idle.gif', format = 'gif -index %i' %(i)) for i in range(8)]
-sleep = [tk.PhotoImage(file = './gifs/sleep.gif', format = 'gif -index %i' %(i)) for i in range(3)]
-walking_negative = [tk.PhotoImage(file = './gifs/walking_negative.gif', format = 'gif -index %i' %(i)) for i in range(8)]
-walking_positive = [tk.PhotoImage(file = './gifs/walking_positive.gif', format = 'gif -index %i' %(i)) for i in range(8)]
+cycle = 0
+check = 1
 
-def changeAction():
-    global frames  # Declare frames as a global variable
-    event_number = random.randrange(1, 4, 1)  # Changed to 4 for correct range
-    if event_number == 1:
-        frames = idle
-    elif event_number == 2:
-        frames = sleep
-    elif event_number == 3:
-        frames = walking_negative
-    update(0, len(frames))
-    window.after(600, changeAction)
+idle_num = [1, 2, 3, 4]
+sleep_num = [10, 11, 12, 13, 15]
+walk_left = [6, 7]
+walk_right = [8, 9]
+event_number = random.randrange(1, 3, 1)
 
-def update_position():
-    global x
-    x += 5  # Adjust the speed as needed
-    window.geometry(f'100x100+{x}+200')  # Set window dimensions and position
-    window.after(50, update_position)  # Schedule the next update after 50 milliseconds
+impath = './gifs/'
 
-def update(ind, frameCount):
-    frame = frames[ind]
-    ind += 1
-    if ind == frameCount:
-        ind = 0
+def event(cycle, check, event_number, x, y):
+    if event_number in idle_num:
+        check = 0
+        print('idle')
+        window.after(400, update, cycle, check, event_number, x, y)
+    elif event_number == 5:
+        check = 1
+        print('from idle to sleep')
+        window.after(100, update, cycle, check, event_number, x, y)
+    elif event_number in walk_left:
+        check = 4
+        print('walking towards left')
+        window.after(100, update, cycle, check, event_number, x, y)
+    elif event_number in walk_right:
+        check = 5
+        print('walking towards right')
+        window.after(100, update, cycle, check, event_number, x, y)
+    elif event_number in sleep_num:
+        check = 2
+        print('sleep')
+        window.after(1000, update, cycle, check, event_number, x, y)
+    elif event_number == 14:
+        check = 3
+        print('from sleep to idle')
+        window.after(100, update, cycle, check, event_number, x, y)
+
+def gif_work(cycle, frames, event_number, first_num, last_num):
+    if cycle < len(frames) - 1:
+        cycle += 1
+    else:
+        cycle = 0
+        event_number = random.randrange(first_num, last_num + 1, 1)
+    return cycle, event_number
+
+def update(cycle, check, event_number, x, y):
+    if check == 0:
+        frame = idle[cycle]
+        cycle, event_number = gif_work(cycle, idle, event_number, 1, 9)
+    elif check == 1:
+        frame = idle_to_sleep[cycle]
+        cycle, event_number = gif_work(cycle, idle_to_sleep, event_number, 10, 10)
+    elif check == 2:
+        frame = sleep[cycle]
+        cycle, event_number = gif_work(cycle, sleep, event_number, 10, 15)
+        y += 20
+    elif check == 3:
+        frame = sleep_to_idle[cycle]
+        cycle, event_number = gif_work(cycle, sleep_to_idle, event_number, 1, 1)
+    elif check == 4:
+        frame = walk_positive[cycle]
+        cycle, event_number = gif_work(cycle, walk_positive, event_number, 1, 9)
+        x -= 3
+    elif check == 5:
+        frame = walk_negative[cycle]
+        cycle, event_number = gif_work(cycle, walk_negative, event_number, 1, 9)
+        x += 3
+
+    # Ensure the window stays within the screen boundaries
+    x = max(0, min(x, screen_width - 100))
+
+    window.geometry('100x100+' + str(x) + '+'+ str(y))
     label.configure(image=frame)
-    window.after(400, update, ind, frameCount)  # Pass frameCount as an argument
+    window.after(1, event, cycle, check, event_number, x, y)
 
-label = tk.Label()
+# Call buddy's action gif
+idle = [tk.PhotoImage(file=impath + 'idle.gif', format='gif -index %i' % i) for i in range(5)]
+idle_to_sleep = [tk.PhotoImage(file=impath + 'idle_to_sleep.gif', format='gif -index %i' % i) for i in range(8)]
+sleep = [tk.PhotoImage(file=impath + 'sleep.gif', format='gif -index %i' % i) for i in range(3)]
+sleep_to_idle = [tk.PhotoImage(file=impath + 'sleep_to_idle.gif', format='gif -index %i' % i) for i in range(8)]
+walk_positive = [tk.PhotoImage(file=impath + 'walking_positive.gif', format='gif -index %i' % i) for i in range(8)]
+walk_negative = [tk.PhotoImage(file=impath + 'walking_negative.gif', format='gif -index %i' % i) for i in range(8)]
+
+# Window configuration
+
+# window.config(highlightbackground='black')
+label = tk.Label(window, bd=0, bg='black')
+# window.overrideredirect(True)
+# window.wm_attributes('-transparentcolor', 'black')
 label.pack()
-update_position()
-window.after(0, update, 0)
 
-frames = []  # Initialize frames variable
-changeAction()  # Start with an initial action
+# Loop the program
+window.after(1, update, cycle, check, event_number, x, y)
 window.mainloop()
+
