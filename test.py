@@ -1,5 +1,9 @@
 import tkinter as tk
 import random
+from tkinter import ttk
+from threading import Thread
+from time import sleep
+from PIL import Image, ImageTk 
 
 window = tk.Tk()
 
@@ -29,6 +33,37 @@ impath = './pgifs/'
 button_pressed = False
 pooped_times = 0
 
+# Variables for progress bar
+initial_progress = 50
+progress_value = tk.DoubleVar(value=initial_progress)
+progress_step = 1  # Adjust the decrement step
+feed_increment = 10  # Adjust the increment when the feed button is pressed
+decrement_interval = 1000  # Adjust the time interval for decrementing (in milliseconds)
+
+# Function to decrement the progress bar slowly
+def decrement_progress():
+    current_value = progress_value.get()
+    if current_value > 0:
+        progress_value.set(current_value - progress_step)
+    window.after(decrement_interval, decrement_progress)
+    
+# Function to handle feed button click
+def feed_button_click():
+    current_value = progress_value.get()
+    new_value = min(100, current_value + feed_increment)
+    progress_value.set(new_value)
+
+def on_loading(widget, value, loading_end):
+    print('loading...')
+    widget.start(150)
+    sleep(15)
+    widget.stop()
+    value(100)
+    on_ready()
+
+def on_ready():
+    print("now ready to work...")
+    
 def label_click(event):
     global button_pressed
     global pooped_times
@@ -135,7 +170,7 @@ def update(cycle, check, event_number, x, y):
     label.configure(image=frame)
     window.after(1, event, cycle, check, event_number, x, y)
 
-# Call buddy's action gif
+# load in gifs
 idle = [tk.PhotoImage(file=impath + 'idle.gif', format='gif -index %i' % i) for i in range(6)]
 idle_to_sleep = [tk.PhotoImage(file=impath + 'sleep.gif', format='gif -index %i' % i) for i in range(7)]
 sleep = [tk.PhotoImage(file=impath + 'sleeping.gif', format='gif -index %i' % i) for i in range(6)]
@@ -161,9 +196,87 @@ label = tk.Label(window, bd=0, bg='black')
 # window.overrideredirect(True)
 # window.wm_attributes('-transparentcolor', 'black')
 # window.wm_attributes('-transparent', False)
+
+#draws on top
 window.attributes('-topmost', True)
 label.bind("<Button-1>", label_click)
 label.pack()
+
+
+# #progress bar stuff:
+# # Progress Bar window configuration
+# progress_window = tk.Toplevel(window)
+# progress_window.title("Progress Bar")
+# progress_window.attributes('-topmost', True)
+# progress_window.geometry('96x96+' + str(0) + '+'+ str(y))
+
+# # Dark purple outline
+# progress_window.configure(bg='#3B1D57')
+
+# # Create a style for the progress bar
+# style = ttk.Style()
+# style.configure("Purple.Horizontal.TProgressbar",
+#                 thickness=30,  # Adjust thickness
+#                 troughcolor='#3B1D57',  # Dark purple outline
+#                 bordercolor='#3B1D57',  # Dark purple outline
+#                 lightcolor='#8C7C9A',  # Light purple fill
+#                 darkcolor='#8C7C9A',  # Light purple fill
+#                 troughrelief='flat',  # Flat relief
+#                 troughpadding=0)  # No padding
+
+# progress_var = tk.DoubleVar()
+# progress_bar = ttk.Progressbar(progress_window, variable=progress_var, length=100, mode='determinate', style="Purple.Horizontal.TProgressbar")
+# progress_bar.pack(pady=20)
+
+
+#### progress bar stuff
+
+# Create a new Toplevel window for the progress bar
+progress_window = tk.Toplevel(window)
+progress_window.title("Progress Bar Window")
+#progress_window.geometry('30x' + str(96) + '+0+0')  # Adjust the size and position of the window
+
+progress_window.attributes('-topmost', True)
+progress_window.geometry('30x96+' + str(0) + '+'+ str(y))
+
+# Create an image for the feed button
+feed_image = Image.open('feed_image.png')  # Replace 'feed_image.png' with the actual image file
+feed_image = feed_image.resize((30, 30), Image.ANTIALIAS)  # Resize the image
+feed_photo = ImageTk.PhotoImage(feed_image)
+
+# Create a feed button with the feed image
+feed_button = tk.Button(progress_window, image=feed_photo, command=feed_button_click, bd=0, bg='black')
+feed_button.pack(side=tk.TOP, pady=0)
+
+feed_button.image = feed_photo
+
+# Create a label for the progress bar
+progress_label = ttk.Label(progress_window, text="Progress Bar", font=("Arial", 12))
+progress_label.pack(side=tk.TOP, pady=0)
+
+# Create a style for the progress bar (pixel art style with light and dark purple colors)
+style = ttk.Style()
+style.theme_use('default')
+style.configure("TProgressbar", thickness=20, troughcolor="#6a5acd", bordercolor="#800080", background="#9370db")
+
+# Create a progress bar
+#progress_bar = ttk.Progressbar(progress_window, variable=progress_value, length=20, mode='determinate', orient='vertical', style="TProgressbar")
+style = ttk.Style()
+style.layout("TVertical.TProgressbar",
+             [('Vertical.Progressbar.trough',
+               {'children': [('Vertical.Progressbar.pbar',
+                               {'side': 'top', 'sticky': 'ns'})],
+                'sticky': 'nswe'}),
+              ('Vertical.Progressbar.label', {'sticky': ''})])
+progress_bar = ttk.Progressbar(progress_window, variable=progress_value, length=screen_height, mode='determinate', orient='vertical', style="TVertical.TProgressbar")
+progress_bar.pack(side=tk.TOP, pady=10)
+
+# Start the decrementing process
+window.after(1, decrement_progress)
+
+
+
+
 
 # Loop the program
 window.after(1, update, cycle, check, event_number, x, y)
