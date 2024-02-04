@@ -10,7 +10,7 @@ screen_height = window.winfo_screenheight()
 #begin x
 x = 100
 #begin y
-y = 200
+y = 700
 
 cycle = 0
 check = 1
@@ -48,6 +48,10 @@ def event(cycle, check, event_number, x, y):
         check = 3
         print('from sleep to idle')
         window.after(100, update, cycle, check, event_number, x, y)
+    elif event_number == 100:
+        check = 6
+        print('pooping')
+        window.after(100, update, cycle, check, event_number, x, y)
 
 def gif_work(cycle, frames, event_number, first_num, last_num):
     if cycle < len(frames) - 1:
@@ -62,38 +66,48 @@ def update(cycle, check, event_number, x, y):
         frame = idle[cycle]
         cycle, event_number = gif_work(cycle, idle, event_number, 1, 9)
     elif check == 1:
-        frame = idle_to_sleep[cycle]
-        cycle, event_number = gif_work(cycle, idle_to_sleep, event_number, 10, 10)
+        frame = gotosleep[cycle]
+        cycle, event_number = gif_work(cycle, gotosleep, event_number, 10, 10)
     elif check == 2:
-        frame = sleep[cycle]
-        cycle, event_number = gif_work(cycle, sleep, event_number, 10, 15)
+        frame = sleeping[cycle]
+        cycle, event_number = gif_work(cycle, sleeping, event_number, 10, 15)
+        y += 20
     elif check == 3:
-        frame = sleep_to_idle[cycle]
-        cycle, event_number = gif_work(cycle, sleep_to_idle, event_number, 1, 1)
+        frame = wakeup[cycle]
+        cycle, event_number = gif_work(cycle, wakeup, event_number, 1, 1)
     elif check == 4:
-        frame = walk_positive[cycle]
-        cycle, event_number = gif_work(cycle, walk_positive, event_number, 1, 9)
+        frame = walkingright[cycle]
+        cycle, event_number = gif_work(cycle, walkingright, event_number, 1, 9)
         x -= 3
     elif check == 5:
-        frame = walk_negative[cycle]
-        cycle, event_number = gif_work(cycle, walk_negative, event_number, 1, 9)
+        frame = walkingleft[cycle]
+        cycle, event_number = gif_work(cycle, walkingleft, event_number, 1, 9)
         x += 3
-
+    elif check == 6:
+        frame = pooping[cycle]
+        cycle, event_number = gif_work(cycle, pooping, event_number, 1, 15)
+    
+        
     # Ensure the window stays within the screen boundaries
     x = max(0, min(x, screen_width - 100))
-    y = max(0, min(y, screen_width - 100))
 
-    window.geometry('96x96+' + str(x) + '+'+ str(y))
+    window.geometry('100x100+' + str(x) + '+'+ str(y))
     label.configure(image=frame)
     window.after(1, event, cycle, check, event_number, x, y)
 
+def on_label_click(event):
+    event_number = 100
+    window.after(1, update, cycle, check, event_number, x, y)
+
 # Call buddy's action gif
 idle = [tk.PhotoImage(file=impath + 'idle.gif', format='gif -index %i' % i) for i in range(6)]
-idle_to_sleep = [tk.PhotoImage(file=impath + 'gotosleep.gif', format='gif -index %i' % i) for i in range(7)]
-sleep = [tk.PhotoImage(file=impath + 'sleeping.gif', format='gif -index %i' % i) for i in range(6)]
-sleep_to_idle = [tk.PhotoImage(file=impath + 'wakeup.gif', format='gif -index %i' % i) for i in range(7)]
-walk_positive = [tk.PhotoImage(file=impath + 'walkingleft.gif', format='gif -index %i' % i) for i in range(8)]
-walk_negative = [tk.PhotoImage(file=impath + 'walkingright.gif', format='gif -index %i' % i) for i in range(8)]
+gotosleep = [tk.PhotoImage(file=impath + 'gotosleep.gif', format='gif -index %i' % i) for i in range(7)]
+sleeping = [tk.PhotoImage(file=impath + 'sleeping.gif', format='gif -index %i' % i) for i in range(6)]
+wakeup = [tk.PhotoImage(file=impath + 'wakeup.gif', format='gif -index %i' % i) for i in range(7)]
+walkingright = [tk.PhotoImage(file=impath + 'walkingright.gif', format='gif -index %i' % i) for i in range(8)]
+walkingleft = [tk.PhotoImage(file=impath + 'walkingleft.gif', format='gif -index %i' % i) for i in range(8)]
+pooping = [tk.PhotoImage(file=impath + 'pooping.gif', format='gif -index %i' % i) for i in range(8)]
+
 
 # Window configuration
 
@@ -101,6 +115,9 @@ walk_negative = [tk.PhotoImage(file=impath + 'walkingright.gif', format='gif -in
 label = tk.Label(window, bd=0, bg='black')
 # window.overrideredirect(True)
 # window.wm_attributes('-transparentcolor', 'black')
+
+# Pooping animation
+label.bind('<Button-1>', on_label_click)
 label.pack()
 
 # Loop the program
