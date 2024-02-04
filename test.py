@@ -28,7 +28,7 @@ sleep_num = [13, 14]
 #if event number == 15, sleep to idle
 event_number = random.randrange(1, 3, 1)
 
-impath = './pgifs/'
+impath = './bgifs/'
 
 button_pressed = False
 feed_button_pressed = False
@@ -188,18 +188,18 @@ idle = [tk.PhotoImage(file=impath + 'idle.gif', format='gif -index %i' % i) for 
 idle_to_sleep = [tk.PhotoImage(file=impath + 'sleep.gif', format='gif -index %i' % i) for i in range(7)]
 sleep = [tk.PhotoImage(file=impath + 'sleeping.gif', format='gif -index %i' % i) for i in range(6)]
 sleep_to_idle = [tk.PhotoImage(file=impath + 'wake.gif', format='gif -index %i' % i) for i in range(7)]
-walk_positive = [tk.PhotoImage(file=impath + 'walkleft.gif', format='gif -index %i' % i) for i in range(8)]
-walk_negative = [tk.PhotoImage(file=impath + 'walkright.gif', format='gif -index %i' % i) for i in range(8)]
-poop = [tk.PhotoImage(file=impath + 'poop.gif', format='gif -index %i' % i) for i in range(8)]
+walk_positive = [tk.PhotoImage(file=impath + 'walkingleft.gif', format='gif -index %i' % i) for i in range(8)]
+walk_negative = [tk.PhotoImage(file=impath + 'walkingright.gif', format='gif -index %i' % i) for i in range(8)]
+poop = [tk.PhotoImage(file=impath + 'pooping.gif', format='gif -index %i' % i) for i in range(8)]
 
 helicopter_1 = [tk.PhotoImage(file=impath + 'helicopter_1.gif', format='gif -index %i' % i) for i in range(18)]
-helicopter_slow = [tk.PhotoImage(file=impath + 'helicopter_slow.gif', format='gif -index %i' % i) for i in range(9)]
+#helicopter_slow = [tk.PhotoImage(file=impath + 'helicopter_slow.gif', format='gif -index %i' % i) for i in range(9)]
 helicopter_fast = [tk.PhotoImage(file=impath + 'helicopter_fast.gif', format='gif -index %i' % i) for i in range(9)]
-helicopter_faster = [tk.PhotoImage(file=impath + 'helicopter_faster.gif', format='gif -index %i' % i) for i in range(9)]
+#helicopter_faster = [tk.PhotoImage(file=impath + 'helicopter_faster.gif', format='gif -index %i' % i) for i in range(9)]
 helicopter_fastest = [tk.PhotoImage(file=impath + 'helicopter_fastest.gif', format='gif -index %i' % i) for i in range(9)]
 tornado = [tk.PhotoImage(file=impath + 'TORNADO.gif', format='gif -index %i' % i) for i in range(3)]
 
-helicopter = [] + helicopter_1 + helicopter_slow + helicopter_fast + helicopter_fastest + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado
+helicopter = [] + helicopter_1 + helicopter_fast + helicopter_fastest + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado
 helicopter = helicopter + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado +  tornado 
 print(len(helicopter))
 # Window configuration
