@@ -118,12 +118,12 @@ def update(cycle, check, event_number, x, y):
         cycle, event_number = gif_work(cycle, poop, event_number, 1,12)#go to idle or walk more
     elif check == 7:
         frame = helicopter[cycle]
-        if 30 < cycle < 50:
-            x += 15
-            y -= 12
-        elif cycle >= 50:
-            x -= 15
-            y += 10
+        if 20 < cycle < 67:
+            x += 20
+            y -= 15
+        elif cycle >= 67:
+            x -= 20
+            y += 15
         cycle, event_number = gif_work(cycle, helicopter, event_number, 1,12)#go to idle or walk more
         
 
@@ -151,8 +151,8 @@ helicopter_faster = [tk.PhotoImage(file=impath + 'helicopter_faster.gif', format
 helicopter_fastest = [tk.PhotoImage(file=impath + 'helicopter_fastest.gif', format='gif -index %i' % i) for i in range(9)]
 tornado = [tk.PhotoImage(file=impath + 'TORNADO.gif', format='gif -index %i' % i) for i in range(3)]
 
-helicopter = [] + helicopter_1 + helicopter_slow + helicopter_fast + helicopter_fastest + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado 
-helicopter = helicopter + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado
+helicopter = [] + helicopter_1 + helicopter_slow + helicopter_fast + helicopter_fastest + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado
+helicopter = helicopter + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado +  tornado 
 print(len(helicopter))
 # Window configuration
 
@@ -161,6 +161,7 @@ label = tk.Label(window, bd=0, bg='black')
 # window.overrideredirect(True)
 # window.wm_attributes('-transparentcolor', 'black')
 # window.wm_attributes('-transparent', False)
+window.attributes('-topmost', True)
 label.bind("<Button-1>", label_click)
 label.pack()
 
