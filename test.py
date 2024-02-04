@@ -27,7 +27,7 @@ def event(cycle, check, event_number, x, y):
     if event_number in idle_num:
         check = 0
         print('idle')
-        window.after(400, update, cycle, check, event_number, x, y)
+        window.after(100, update, cycle, check, event_number, x, y)
     elif event_number == 5:
         check = 1
         print('from idle to sleep')
@@ -89,11 +89,11 @@ def update(cycle, check, event_number, x, y):
 
 # Call buddy's action gif
 idle = [tk.PhotoImage(file=impath + 'idle.gif', format='gif -index %i' % i) for i in range(6)]
-idle_to_sleep = [tk.PhotoImage(file=impath + 'gotosleep.gif', format='gif -index %i' % i) for i in range(7)]
+idle_to_sleep = [tk.PhotoImage(file=impath + 'sleep.gif', format='gif -index %i' % i) for i in range(7)]
 sleep = [tk.PhotoImage(file=impath + 'sleeping.gif', format='gif -index %i' % i) for i in range(6)]
-sleep_to_idle = [tk.PhotoImage(file=impath + 'wakeup.gif', format='gif -index %i' % i) for i in range(7)]
-walk_positive = [tk.PhotoImage(file=impath + 'walkingleft.gif', format='gif -index %i' % i) for i in range(8)]
-walk_negative = [tk.PhotoImage(file=impath + 'walkingright.gif', format='gif -index %i' % i) for i in range(8)]
+sleep_to_idle = [tk.PhotoImage(file=impath + 'wake.gif', format='gif -index %i' % i) for i in range(7)]
+walk_positive = [tk.PhotoImage(file=impath + 'walkleft.gif', format='gif -index %i' % i) for i in range(8)]
+walk_negative = [tk.PhotoImage(file=impath + 'walkright.gif', format='gif -index %i' % i) for i in range(8)]
 
 # Window configuration
 
@@ -101,9 +101,9 @@ walk_negative = [tk.PhotoImage(file=impath + 'walkingright.gif', format='gif -in
 label = tk.Label(window, bd=0, bg='black')
 # window.overrideredirect(True)
 # window.wm_attributes('-transparentcolor', 'black')
+# window.wm_attributes('-transparent', False)
 label.pack()
 
 # Loop the program
 window.after(1, update, cycle, check, event_number, x, y)
 window.mainloop()
-
