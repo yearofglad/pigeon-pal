@@ -19,7 +19,7 @@ Built it in Python using tkinter with custom made gif animations.
 ## Demoes:
 ![clip1](/demo_gifs/clip1.gif)
 ![clip2](/demo_gifs/clip2.gif)
-![clip3](/bgifs/demo_gifs/clip3.gif)
+![clip3](/demo_gifs/clip3.gif)
 
 ## Try it yourself! Clone the repository and run the corresponding Python script.
 
