@@ -3,7 +3,7 @@ import random
 from tkinter import ttk
 from threading import Thread
 from time import sleep
-from PIL import Image, ImageTk 
+from PIL import Image, ImageTk, ImageSequence
 
 window = tk.Tk()
 
@@ -73,6 +73,49 @@ def label_click(event):
     print("label clicked")
     button_pressed = True
     pooped_times += 1
+
+def unpack_gif(src):
+    # Load Gif
+    image = Image.open(src)
+
+    # Get frames and disposal method for each frame
+    frames = []
+    disposal = []
+    for gifFrame in ImageSequence.Iterator(image):
+        disposal.append(gifFrame.disposal_method)
+        frames.append(gifFrame.convert('RGBA'))
+
+    # Loop through frames, and edit them based on their disposal method
+    output = []
+    lastFrame = None
+    thisFrame = None
+    for i, loadedFrame in enumerate(frames):
+        # Update thisFrame
+        thisFrame = loadedFrame
+
+        # If the disposal method is 2
+        if disposal[i] == 2:
+            # Check that this is not the first frame
+            if i != 0:
+                # Pastes thisFrame's opaque pixels over lastFrame and appends lastFrame to output
+                lastFrame.paste(thisFrame, mask=thisFrame.split()[3])
+                output.append(ImageTk.PhotoImage(lastFrame))
+            else:
+                output.append(ImageTk.PhotoImage(thisFrame))
+
+        # If the disposal method is 1 or 0
+        elif disposal[i] == 1 or disposal[i] == 0:
+            # Appends thisFrame to output
+            output.append(ImageTk.PhotoImage(thisFrame))
+
+        # If disposal method is anything other than 2, 1, or 0
+        else:
+            raise ValueError('Disposal Methods other than 2: Restore to Background, 1: Do Not Dispose, and 0: No Disposal are supported at this time')
+
+        # Update lastFrame
+        lastFrame = loadedFrame
+
+    return output
 
 def event(cycle, check, event_number, x, y):
     global button_pressed
@@ -191,12 +234,17 @@ walk_positive = [tk.PhotoImage(file=impath + 'walkingleft.gif', format='gif -ind
 walk_negative = [tk.PhotoImage(file=impath + 'walkingright.gif', format='gif -index %i' % i) for i in range(8)]
 poop = [tk.PhotoImage(file=impath + 'pooping.gif', format='gif -index %i' % i) for i in range(8)]
 
-helicopter_1 = [tk.PhotoImage(file=impath + 'helicopter_1.gif', format='gif -index %i' % i) for i in range(18)]
-#helicopter_slow = [tk.PhotoImage(file=impath + 'helicopter_slow.gif', format='gif -index %i' % i) for i in range(9)]
-helicopter_fast = [tk.PhotoImage(file=impath + 'helicopter_fast.gif', format='gif -index %i' % i) for i in range(9)]
-#helicopter_faster = [tk.PhotoImage(file=impath + 'helicopter_faster.gif', format='gif -index %i' % i) for i in range(9)]
-helicopter_fastest = [tk.PhotoImage(file=impath + 'helicopter_fastest.gif', format='gif -index %i' % i) for i in range(9)]
-tornado = [tk.PhotoImage(file=impath + 'TORNADO.gif', format='gif -index %i' % i) for i in range(3)]
+
+#helicopter_1 = [tk.PhotoImage(file=impath + 'helicopter_1.gif', format='gif -index %i' % i) for i in range(18)]
+# helicopter_fast = [tk.PhotoImage(file=impath + 'helicopter_fast.gif', format='gif -index %i' % i) for i in range(9)]
+# helicopter_fastest = [tk.PhotoImage(file=impath + 'helicopter_fastest.gif', format='gif -index %i' % i) for i in range(9)]
+#tornado = [tk.PhotoImage(file=impath + 'TORNADO.gif', format='gif -index %i' % i) for i in range(3)]
+
+helicopter_1 = unpack_gif(src=impath + 'helicopter_1.gif')
+helicopter_fast = unpack_gif(src=impath + 'helicopter_fast.gif')
+helicopter_fastest = unpack_gif(src=impath + 'helicopter_fastest.gif')
+tornado = unpack_gif(src=impath + 'TORNADO.gif')
+
 feeding = [tk.PhotoImage(file=impath + 'feeding.gif', format='gif -index %i' % i) for i in range(23)]
 helicopter = [] + helicopter_1 + helicopter_fast + helicopter_fastest + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado
 helicopter = helicopter + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado + tornado +  tornado 
@@ -208,8 +256,8 @@ window.config(highlightbackground='#5a4e44')
 window.configure(background='#5a4e44', highlightthickness=0)
 label = tk.Label(window, bd=0, bg='#5a4e44')
 window.overrideredirect(True)
-window.wm_attributes('-transparentcolor', '#5a4e44')
-window.wm_attributes('-transparent', '#5a4e44')
+#window.wm_attributes('-transparentcolor', '#5a4e44')
+#window.wm_attributes('-transparent', '#5a4e44')
 
 #draws on top
 window.attributes('-topmost', True)
@@ -253,8 +301,8 @@ progress_window.title("Progress Bar Window")
 progress_window.attributes('-topmost', True)
 progress_window.geometry('30x120+' + str(0) + '+'+ str(y))
 #progress_window.attributes('-alpha', 0.7) 
-progress_window.attributes("-transparentcolor", "black")  # Replace "black" with the color you want to be transparent
-progress_window.overrideredirect(True)  # Remove window borders
+#progress_window.attributes("-transparentcolor", "black")  # Replace "black" with the color you want to be transparent
+#progress_window.overrideredirect(True)  # Remove window borders
 
 # Create an image for the feed button
 feed_image = Image.open('feed_image.png')  # Replace 'feed_image.png' with the actual image file
