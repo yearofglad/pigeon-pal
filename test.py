@@ -8,27 +8,57 @@ screen_width = window.winfo_screenwidth()
 screen_height = window.winfo_screenheight()
 
 #begin x
-x = 100
+x = 200
 #begin y
-y = 200
+y = 700
 
 cycle = 0
 check = 1
 
-idle_num = [1, 2, 3, 4]
-sleep_num = [10, 11, 12, 13, 15]
-walk_left = [6, 7]
-walk_right = [8, 9]
+idle_num = [1, 2, 3]
+#if event number == 4, idle to sleep
+
+walk_left = [5, 6, 7, 8]
+walk_right = [9, 10, 11, 12]
+sleep_num = [13, 14]
+#if event number == 15, sleep to idle
 event_number = random.randrange(1, 3, 1)
 
 impath = './pgifs/'
 
+
+# def label_click(event):
+#     print("label clicked")
+#     check = 6
+#     event_number = 100
+#     cycle = 0
+    
+#     cycle, event_number = gif_work(cycle, poop, event_number, 1, 12)
+#     window.geometry('96x96+' + str(x) + '+'+ str(y))
+#     frame = poop[cycle]
+#     label.configure(image=frame)
+ 
+#     window.after(1, update, cycle, check, event_number, x, y)
+#     return
+button_pressed = False
+
+def label_click(event):
+    global button_pressed
+    print("label clicked")
+    button_pressed = True
+
 def event(cycle, check, event_number, x, y):
-    if event_number in idle_num:
+    global button_pressed
+    if button_pressed:
+        check = 6
+        event_number = 100
+        window.after(100, update, cycle, check, event_number, x, y)
+        button_pressed = False
+    elif event_number in idle_num:
         check = 0
         print('idle')
         window.after(100, update, cycle, check, event_number, x, y)
-    elif event_number == 5:
+    elif event_number == 4:
         check = 1
         print('from idle to sleep')
         window.after(100, update, cycle, check, event_number, x, y)
@@ -43,11 +73,16 @@ def event(cycle, check, event_number, x, y):
     elif event_number in sleep_num:
         check = 2
         print('sleep')
-        window.after(1000, update, cycle, check, event_number, x, y)
-    elif event_number == 14:
+        window.after(500, update, cycle, check, event_number, x, y)
+    elif event_number == 15:
         check = 3
         print('from sleep to idle')
         window.after(100, update, cycle, check, event_number, x, y)
+    elif event_number == 100:
+        check = 6
+        print('button press poop')
+        window.after(100, update, cycle, check, event_number, x, y)
+        
 
 def gif_work(cycle, frames, event_number, first_num, last_num):
     if cycle < len(frames) - 1:
@@ -60,24 +95,27 @@ def gif_work(cycle, frames, event_number, first_num, last_num):
 def update(cycle, check, event_number, x, y):
     if check == 0:
         frame = idle[cycle]
-        cycle, event_number = gif_work(cycle, idle, event_number, 1, 9)
+        cycle, event_number = gif_work(cycle, idle, event_number, 5, 11) # if idle, go to walking next
     elif check == 1:
         frame = idle_to_sleep[cycle]
-        cycle, event_number = gif_work(cycle, idle_to_sleep, event_number, 10, 10)
+        cycle, event_number = gif_work(cycle, idle_to_sleep, event_number, 13, 13) #go to sleep
     elif check == 2:
         frame = sleep[cycle]
-        cycle, event_number = gif_work(cycle, sleep, event_number, 10, 15)
+        cycle, event_number = gif_work(cycle, sleep, event_number, 14, 15) # if currently sleeping, sleep or wake
     elif check == 3:
         frame = sleep_to_idle[cycle]
-        cycle, event_number = gif_work(cycle, sleep_to_idle, event_number, 1, 1)
+        cycle, event_number = gif_work(cycle, sleep_to_idle, event_number, 1, 1) # if wake, idle next
     elif check == 4:
         frame = walk_positive[cycle]
-        cycle, event_number = gif_work(cycle, walk_positive, event_number, 1, 9)
+        cycle, event_number = gif_work(cycle, walk_positive, event_number, 3, 12) #go to idle or walk more
         x -= 3
     elif check == 5:
         frame = walk_negative[cycle]
-        cycle, event_number = gif_work(cycle, walk_negative, event_number, 1, 9)
+        cycle, event_number = gif_work(cycle, walk_negative, event_number, 3,12)#go to idle or walk more
         x += 3
+    elif check == 6:
+        frame = poop[cycle]
+        cycle, event_number = gif_work(cycle, poop, event_number, 1,12)#go to idle or walk more
 
     # Ensure the window stays within the screen boundaries
     x = max(0, min(x, screen_width - 100))
@@ -94,6 +132,7 @@ sleep = [tk.PhotoImage(file=impath + 'sleeping.gif', format='gif -index %i' % i)
 sleep_to_idle = [tk.PhotoImage(file=impath + 'wake.gif', format='gif -index %i' % i) for i in range(7)]
 walk_positive = [tk.PhotoImage(file=impath + 'walkleft.gif', format='gif -index %i' % i) for i in range(8)]
 walk_negative = [tk.PhotoImage(file=impath + 'walkright.gif', format='gif -index %i' % i) for i in range(8)]
+poop = [tk.PhotoImage(file=impath + 'poop.gif', format='gif -index %i' % i) for i in range(8)]
 
 # Window configuration
 
@@ -102,6 +141,7 @@ label = tk.Label(window, bd=0, bg='black')
 # window.overrideredirect(True)
 # window.wm_attributes('-transparentcolor', 'black')
 # window.wm_attributes('-transparent', False)
+label.bind("<Button-1>", label_click)
 label.pack()
 
 # Loop the program
