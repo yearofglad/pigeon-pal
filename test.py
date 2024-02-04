@@ -10,7 +10,7 @@ screen_height = window.winfo_screenheight()
 #begin x
 x = 100
 #begin y
-y = 700
+y = 200
 
 cycle = 0
 check = 1
@@ -21,7 +21,7 @@ walk_left = [6, 7]
 walk_right = [8, 9]
 event_number = random.randrange(1, 3, 1)
 
-impath = './gifs/'
+impath = './pgifs/'
 
 def event(cycle, check, event_number, x, y):
     if event_number in idle_num:
@@ -67,7 +67,6 @@ def update(cycle, check, event_number, x, y):
     elif check == 2:
         frame = sleep[cycle]
         cycle, event_number = gif_work(cycle, sleep, event_number, 10, 15)
-        y += 20
     elif check == 3:
         frame = sleep_to_idle[cycle]
         cycle, event_number = gif_work(cycle, sleep_to_idle, event_number, 1, 1)
@@ -82,18 +81,19 @@ def update(cycle, check, event_number, x, y):
 
     # Ensure the window stays within the screen boundaries
     x = max(0, min(x, screen_width - 100))
+    y = max(0, min(y, screen_width - 100))
 
-    window.geometry('100x100+' + str(x) + '+'+ str(y))
+    window.geometry('96x96+' + str(x) + '+'+ str(y))
     label.configure(image=frame)
     window.after(1, event, cycle, check, event_number, x, y)
 
 # Call buddy's action gif
-idle = [tk.PhotoImage(file=impath + 'idle.gif', format='gif -index %i' % i) for i in range(5)]
-idle_to_sleep = [tk.PhotoImage(file=impath + 'idle_to_sleep.gif', format='gif -index %i' % i) for i in range(8)]
-sleep = [tk.PhotoImage(file=impath + 'sleep.gif', format='gif -index %i' % i) for i in range(3)]
-sleep_to_idle = [tk.PhotoImage(file=impath + 'sleep_to_idle.gif', format='gif -index %i' % i) for i in range(8)]
-walk_positive = [tk.PhotoImage(file=impath + 'walking_positive.gif', format='gif -index %i' % i) for i in range(8)]
-walk_negative = [tk.PhotoImage(file=impath + 'walking_negative.gif', format='gif -index %i' % i) for i in range(8)]
+idle = [tk.PhotoImage(file=impath + 'idle.gif', format='gif -index %i' % i) for i in range(6)]
+idle_to_sleep = [tk.PhotoImage(file=impath + 'gotosleep.gif', format='gif -index %i' % i) for i in range(7)]
+sleep = [tk.PhotoImage(file=impath + 'sleeping.gif', format='gif -index %i' % i) for i in range(6)]
+sleep_to_idle = [tk.PhotoImage(file=impath + 'wakeup.gif', format='gif -index %i' % i) for i in range(7)]
+walk_positive = [tk.PhotoImage(file=impath + 'walkingleft.gif', format='gif -index %i' % i) for i in range(8)]
+walk_negative = [tk.PhotoImage(file=impath + 'walkingright.gif', format='gif -index %i' % i) for i in range(8)]
 
 # Window configuration
 
