@@ -31,6 +31,7 @@ event_number = random.randrange(1, 3, 1)
 impath = './pgifs/'
 
 button_pressed = False
+feed_button_pressed = False
 pooped_times = 0
 
 # Variables for progress bar
@@ -43,12 +44,14 @@ decrement_interval = 1000  # Adjust the time interval for decrementing (in milli
 # Function to decrement the progress bar slowly
 def decrement_progress():
     current_value = progress_value.get()
-    if current_value > 0:
+    if current_value > 5:
         progress_value.set(current_value - progress_step)
     window.after(decrement_interval, decrement_progress)
     
 # Function to handle feed button click
 def feed_button_click():
+    global feed_button_pressed
+    feed_button_pressed = True
     current_value = progress_value.get()
     new_value = min(100, current_value + feed_increment)
     progress_value.set(new_value)
@@ -74,7 +77,13 @@ def label_click(event):
 def event(cycle, check, event_number, x, y):
     global button_pressed
     global pooped_times
-    if button_pressed and pooped_times < 5:
+    global feed_button_pressed
+    if feed_button_pressed or event_number == 300:
+        check = 8
+        event_number = 300
+        window.after(200, update, cycle, check, event_number, x, y)
+        feed_button_pressed = False
+    elif button_pressed and pooped_times < 5:
         check = 6
         event_number = 100
         window.after(100, update, cycle, check, event_number, x, y)
@@ -104,7 +113,7 @@ def event(cycle, check, event_number, x, y):
     elif event_number in sleep_num:
         check = 2
         print('sleep')
-        window.after(500, update, cycle, check, event_number, x, y)
+        window.after(1000, update, cycle, check, event_number, x, y)
     elif event_number == 15:
         check = 3
         print('from sleep to idle')
@@ -160,6 +169,10 @@ def update(cycle, check, event_number, x, y):
             x -= 20
             y += 15
         cycle, event_number = gif_work(cycle, helicopter, event_number, 1,12)#go to idle or walk more
+    elif check == 8:
+        frame = poop[cycle]
+        cycle, event_number = gif_work(cycle, walk_negative, event_number, 3,12)#go to idle or walk more
+        
         
 
     # Ensure the window stays within the screen boundaries
@@ -237,7 +250,10 @@ progress_window.title("Progress Bar Window")
 #progress_window.geometry('30x' + str(96) + '+0+0')  # Adjust the size and position of the window
 
 progress_window.attributes('-topmost', True)
-progress_window.geometry('30x96+' + str(0) + '+'+ str(y))
+progress_window.geometry('30x120+' + str(0) + '+'+ str(y))
+#progress_window.attributes('-alpha', 0.7) 
+#progress_window.attributes("-transparentcolor", "black")  # Replace "black" with the color you want to be transparent
+#progress_window.overrideredirect(True)  # Remove window borders
 
 # Create an image for the feed button
 feed_image = Image.open('feed_image.png')  # Replace 'feed_image.png' with the actual image file
@@ -251,13 +267,16 @@ feed_button.pack(side=tk.TOP, pady=0)
 feed_button.image = feed_photo
 
 # Create a label for the progress bar
-progress_label = ttk.Label(progress_window, text="Progress Bar", font=("Arial", 12))
-progress_label.pack(side=tk.TOP, pady=0)
+#progress_label = ttk.Label(progress_window, text="Progress Bar", font=("Arial", 12))
+progress_label = ttk.Label(progress_window)
+progress_label.pack(side=tk.LEFT, pady=0)
 
 # Create a style for the progress bar (pixel art style with light and dark purple colors)
 style = ttk.Style()
 style.theme_use('default')
-style.configure("TProgressbar", thickness=20, troughcolor="#6a5acd", bordercolor="#800080", background="#9370db")
+style.configure("TProgressbar", thickness=10, troughcolor="#6a5acd", bordercolor="#800080", background="#9370db")
+#transparent?
+#style.configure("TProgressbar", thickness=10, troughcolor="#6a5acd", bordercolor="#800080", background="#0000000")
 
 # Create a progress bar
 #progress_bar = ttk.Progressbar(progress_window, variable=progress_value, length=20, mode='determinate', orient='vertical', style="TProgressbar")
@@ -269,12 +288,12 @@ style.layout("TVertical.TProgressbar",
                 'sticky': 'nswe'}),
               ('Vertical.Progressbar.label', {'sticky': ''})])
 progress_bar = ttk.Progressbar(progress_window, variable=progress_value, length=screen_height, mode='determinate', orient='vertical', style="TVertical.TProgressbar")
-progress_bar.pack(side=tk.TOP, pady=10)
+progress_bar.pack(side=tk.TOP, pady=0)
 
 # Start the decrementing process
 window.after(1, decrement_progress)
 
-
+####Progress bar stuff end
 
 
 
