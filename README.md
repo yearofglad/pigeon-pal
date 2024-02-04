@@ -27,4 +27,8 @@ Built it in Python using tkinter with custom made gif animations.
 
 Run the pet_for_mac.py file if you're on a MacOS system, and run pet_for_windows.py for Windows.
 
+The Mac version runs with a border and background due to MacOS settings that we couldn't change :(
+
+Run it in Windows for best effect :)
+
 
