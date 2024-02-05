@@ -17,7 +17,7 @@ Built it in Python using tkinter with custom made gif animations.
 ![walkingleft](/bgifs/walkingleft.gif)
 ![sleeping](/bgifs/sleeping.gif)
 
-## Demoes:
+## Demos:
 ![clip1](/demo_gifs/clip1.gif)
 ![clip2](/demo_gifs/clip2.gif)
 ![clip3](/demo_gifs/clip3.gif)
